@@ -1,0 +1,27 @@
+﻿@{
+    Layout = "_LayoutLogin";
+}
+@model MyPortfolio.Web.Models.LoginViewModel 
+@* model must be injected to use asp-for tag-helper*@
+
+<div class="container">
+<form method="post">
+    <div class="mb-3">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    </div>
+    <div class="mb-3">
+
+        <label asp-for ="EmailAddress" class="form-label">Email address</label>
+        <input asp-for="EmailAddress" class="form-control" aria-describedby="emailHelp">
+        <span asp-validation-for="EmailAddress" class="text-danger"></span>
+
+        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label">Password</label>
+        <input asp-for="Password" class="form-control">
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary" asp-controller="User" asp-action="Authenticate">SignIn</button>
+</form>
+</div>
