@@ -1,13 +1,14 @@
-﻿@{
+﻿@using MyPortfolio.Models.ViewModels
+@{
     Layout = "_LayoutLogin";
 }
-@model MyPortfolio.Web.Models.LoginViewModel 
+@model LoginViewModel 
 @* model must be injected to use asp-for tag-helper*@
 
 <div class="container">
 <form method="post">
     <div class="mb-3">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div asp-validation-summary= "All" class="text-danger"></div>
     </div>
     <div class="mb-3">
 
@@ -22,6 +23,6 @@
         <input asp-for="Password" class="form-control">
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary" asp-controller="User" asp-action="Authenticate">SignIn</button>
+        <button type="submit" class="btn btn-primary" asp-controller="User" asp-action="Authenticate">SignIn</button>
 </form>
 </div>

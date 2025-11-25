@@ -1,34 +1,99 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MyPortfolio.Web.Models;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MyPortfolio.Business;
+using MyPortfolio.Models.ViewModels;
+using System.Security.Claims;
 
 namespace MyPortfolio.Web.Controllers
 {
     public class UserController : Controller
     {
         private ILogger<UserController> _logger;
+        private IMyPortfolioBusiness _myPortfolioBusiness;
 
-        public UserController(ILogger<UserController> logger)
+        public UserController(ILogger<UserController> logger, IMyPortfolioBusiness myPortfolioBusiness)
         {
             this._logger = logger;
+            this._myPortfolioBusiness = myPortfolioBusiness;
         }
-        public IActionResult Index()
+        
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> Index()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult Authenticate(LoginViewModel loginDetail)
+        [AllowAnonymous]
+        public async Task<IActionResult> Authenticate(LoginViewModel loginDetail)
         {
-            //TODO: Need To Implement Cookie Based Authentication
-
             if (ModelState.IsValid)
             {
-                return RedirectToAction("Index", "Home");
+                /*
+                 * TODO:  
+                 * business layer must return some custom response object instead of bool, like vladidation errors, is account locked, password expired etc.
+                 */
+
+                if (await _myPortfolioBusiness.ValidateUserAccount(loginDetail)) 
+                {
+                    await CreateAuthCookie(loginDetail);
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("loginFailure", "Invalid Login Credentials"); //This populates the validation summary in the view "asp-validation-summary"
+                    return View("Index");
+                }
             }
             else
             {
                 return View("Index");
             }
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> SignOutUser()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "User");
+        }
+
+        [AllowAnonymous]
+        public async Task<String> AccessDenied()
+        {
+            return "You are not authorized to access this resource.";
+            //TODO: Create a view for this get a story created. 
+        }
+
+        private async Task CreateAuthCookie(LoginViewModel loginDetail)
+        {
+            //Step 1: Define who the user is (claims)
+            var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, loginDetail.EmailAddress)
+                        //new Claim(ClaimTypes.Role, "Administrator"), 
+                        //coud be used for role based authorization 
+                        // we can use this when we build admin panel for the application
+                    };
+
+            //Step 2: Pack claims into identity
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            /*
+            //Step 3: Optional settings (remember me, expiry)
+            var authProperties = new AuthenticationProperties
+            {
+                // IsPersistent = true;     // "Remember Me"
+                // ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(20);
+            };
+            */
+
+            //Step 4: Create cookie and send to browser
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
         }
     }
 }

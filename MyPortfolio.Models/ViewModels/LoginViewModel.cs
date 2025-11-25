@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MyPortfolio.Web.Models
+namespace MyPortfolio.Models.ViewModels
 {
     public class LoginViewModel
     {
