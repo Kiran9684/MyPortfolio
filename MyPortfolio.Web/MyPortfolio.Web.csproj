@@ -7,12 +7,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\NewFolder\**" />
+    <Content Remove="wwwroot\NewFolder\**" />
+    <EmbeddedResource Remove="wwwroot\NewFolder\**" />
+    <None Remove="wwwroot\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\images\app-logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="toastr" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MyPortfolio.Business\MyPortfolio.Business.csproj" />
     <ProjectReference Include="..\MyPortfolio.Models\MyPortfolio.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\toastr\" />
   </ItemGroup>
 
 </Project>

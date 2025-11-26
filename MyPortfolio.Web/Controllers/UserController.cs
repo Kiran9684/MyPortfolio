@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyPortfolio.Business;
+using MyPortfolio.Business.Utilities;
 using MyPortfolio.Models.ViewModels;
 using System.Security.Claims;
 
@@ -40,6 +41,7 @@ namespace MyPortfolio.Web.Controllers
                 if (await _myPortfolioBusiness.ValidateUserAccount(loginDetail)) 
                 {
                     await CreateAuthCookie(loginDetail);
+                    TempData[ToasterNotificationTypes.SUCCESS] = ToasterNotificationMessages.SUCCESS_LOGIN_WELCOME;
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -50,6 +52,7 @@ namespace MyPortfolio.Web.Controllers
             }
             else
             {
+                TempData[ToasterNotificationTypes.ERROR] = ToasterNotificationMessages.ERROR_INVALID_CREDENTIALS; 
                 return View("Index");
             }
         }
@@ -59,6 +62,7 @@ namespace MyPortfolio.Web.Controllers
         public async Task<IActionResult> SignOutUser()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            TempData[ToasterNotificationTypes.WARNING] = ToasterNotificationMessages.SUCCESS_LOGOUT;
             return RedirectToAction("Index", "User");
         }
 
