@@ -1,0 +1,49 @@
+﻿@using MyPortfolio.Business.Utilities
+
+<script>
+      toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": false,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+</script>
+
+@if (TempData[ToasterNotificationTypes.ERROR] != null)
+{
+    <script>
+        toastr.error("@TempData[ToasterNotificationTypes.ERROR].ToString()","AppNotification !");
+    </script>
+}
+
+@if (TempData[ToasterNotificationTypes.SUCCESS] != null)
+{
+    <script>
+            toastr.success("@TempData[ToasterNotificationTypes.SUCCESS].ToString()","AppNotification !");
+    </script>
+}
+
+@if (TempData[ToasterNotificationTypes.INFO] != null)
+{
+    <script>
+        toastr.info("@TempData[ToasterNotificationTypes.INFO].ToString()","AppNotification !");
+    </script>
+}
+
+@if (TempData[ToasterNotificationTypes.WARNING] != null)
+{
+    <script>
+        toastr.warning("@TempData[ToasterNotificationTypes.WARNING].ToString()","AppNotification !");
+    </script>
+}
