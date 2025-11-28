@@ -1,1 +1,1 @@
-For setup instructions, see the [Installation Guide](docs/installation.md).
+For setup instructions, see the [Installation Guide](docs/local-setup.md).
