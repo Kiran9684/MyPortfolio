@@ -1,0 +1,1 @@
+For setup instructions, see the [Installation Guide](docs/installation.md).
