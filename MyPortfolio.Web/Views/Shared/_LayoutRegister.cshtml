@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - MyPortfolio.Web</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MyPortfolio.Web.styles.css" asp-append-version="true" />
+    <link href="~/css/registerlayout.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
+    <!-- Toastr - Maintain the same order -->
+    <!-- Toastr CSS -->
+    <link href="~/lib/toastr/content/toastr.min.css" rel="stylesheet" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <!-- Toastr JS -->
+    <script src="~/lib/toastr/scripts/toastr.min.js"></script>
+</head>
+<body>
+    <header class="mt-3 d-flex justify-content-between">
+        <img src="~/images/app-logo.png" class="img-fluid ms-1 rounded" alt="..." style="max-width: 100px;">
+        <a asp-controller="User" asp-action="Index" class="me-2">
+            <i class="fa-solid fa-right-to-bracket fs-1"></i>
+        </a>
+    </header>
+    
+    <div class="container userRegestrationContainer">
+        <partial name="_Notification"></partial>
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            <p class="text-black"> &copy; 2025 - MyPortfolio.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></p>
+        </div>
+    </footer>
+    
+    @* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

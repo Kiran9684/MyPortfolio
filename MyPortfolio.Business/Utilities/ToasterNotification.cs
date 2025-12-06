@@ -16,5 +16,6 @@
         public const string ERROR_INVALID_CREDENTIALS = "Invalid Credentials. Please check your username and password.";
         public const string SUCCESS_LOGOUT = "You have been logged out successfully.";
         public const string SUCCESS_LOGIN_WELCOME = "Welcome! You have logged in successfully.";
+        public const string REGESTRATION_SUCCESS = "Registration completed successfully. Please use your credentials to login.";
     }
 }
