@@ -1,0 +1,17 @@
+﻿body {
+    background-image: url('../images/userRegestrationBackgroundfImg.png');/* Replace with your image path */
+    background-size: cover;/* Covers entire viewport */
+    background-position: center;/* Centers the image */
+    background-repeat: no-repeat;/* Prevents tiling */
+    background-attachment: fixed;/* Optional: creates parallax-like effect */
+    /*min-height: 100vh;*//* Ensures full viewport height */
+    margin: 0;/* Removes default margin */
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+}

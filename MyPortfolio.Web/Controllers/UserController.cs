@@ -46,7 +46,8 @@ namespace MyPortfolio.Web.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("loginFailure", "Invalid Login Credentials"); //This populates the validation summary in the view "asp-validation-summary"
+                    //ModelState.AddModelError("loginFailure", "Invalid Login Credentials"); //This populates the validation summary in the view "asp-validation-summary"
+                    TempData[ToasterNotificationTypes.ERROR] = ToasterNotificationMessages.ERROR_INVALID_CREDENTIALS;
                     return View("Index");
                 }
             }
@@ -64,6 +65,33 @@ namespace MyPortfolio.Web.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             TempData[ToasterNotificationTypes.WARNING] = ToasterNotificationMessages.SUCCESS_LOGOUT;
             return RedirectToAction("Index", "User");
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> RegisterUser()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateUser(UserRegistrationViewModel userData)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("RegisterUser"); 
+            }
+            else
+            {
+                //2.Call BL layer to create user
+                //3.In BL Layer, we nee
+                //post sucess redirect to login page with success message notification
+                
+                TempData[ToasterNotificationTypes.SUCCESS] = ToasterNotificationMessages.REGESTRATION_SUCCESS;
+                return RedirectToAction("Index", "User");
+            }
         }
 
         [AllowAnonymous]
