@@ -61,10 +61,35 @@ This guide outlines the steps to deploy the **[MyPortfolioApp]** MVC application
 7.  Grant **Read & Execute** and **List folder contents**.
     * *If the app writes logs or uploads files, also grant **Modify** permissions.*
 8.  Click **Apply**.
+---
+## Step 4: 🚀 IIS Deployment Setup: SQL Server Permissions
+
+**Important:** When running the application via IIS, it runs under a virtual account (AppPool Identity) rather than your personal Windows user. You must grant this account permission to access the database.
+
+**Error Symptom:** If this step is skipped, you will see the error:
+> `Microsoft.Data.SqlClient.SqlException: Login failed for user 'IIS APPPOOL\MyPortfolioApp'.`
+
+### Steps to Fix
+
+1.  **Open SQL Server Management Studio (SSMS)** and connect to your database instance.
+2.  Expand the root **Security** folder (not the one inside the specific database).
+3.  Right-click **Logins** and select **New Login...**.
+4.  **Configure the Login:**
+    * **Login Name:** Type the exact name of your IIS App Pool.
+        * Format: `IIS APPPOOL\YourAppPoolName` (e.g., `IIS APPPOOL\MyPortfolioApp`).
+        * *Note: Do not click "Search", just type it manually.*
+    * **Authentication:** Select **Windows authentication**.
+5.  **Map the User:**
+    * Click **User Mapping** in the left sidebar.
+    * Check the box next to your database (e.g., `MyPortfolioDb`).
+    * In the bottom "Database role membership" section, check:
+        * `db_datareader` (Read access)
+        * `db_datawriter` (Write access)
+6.  Click **OK**.
 
 ---
 
-## Step 4: Access the Application
+## Step 5: Access the Application
 
 Open your browser and navigate to:
 http://localhost:8080
