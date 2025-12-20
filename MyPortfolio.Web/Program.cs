@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-
+using MyPortfolio.Business.Extensions;
+using MyPortfolio.Models.AppModels;
 namespace MyPortfolio.Web
 {
     public class Program
@@ -26,7 +27,12 @@ namespace MyPortfolio.Web
             // Needed if you want to access HttpContext outside controllers
             builder.Services.AddHttpContextAccessor();
 
-            builder.Services.AddScoped<MyPortfolio.Business.IMyPortfolioBusiness, MyPortfolio.Business.MyPortfolioBusiness>();
+            ConfigData configData = new ConfigData
+            {
+                DbConnectionString = builder.Configuration.GetSection("MyPortfolioDBConfig")["ConnectionString"]
+            };
+            builder.Services.AddBusinessAccessServices(configData);
+
 
             var app = builder.Build();
 
