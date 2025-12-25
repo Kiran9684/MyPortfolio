@@ -47,6 +47,10 @@ When running EF Core CLI commands, use the following flags:
 --project          → MyPortfolio.DataAccess
 --startup-project  → MyPortfolio.Web
 
+Creating Migrations: 
 dotnet ef migrations add InitialCreate --project MyPortfolio.DataAccess --startup-project MyPortfolio.Web  → For .NET CLI
 Add-Migration InitialCreate -Project MyPortfolio.DataAccess -StartupProject MyPortfolio.Web → For Package Manager Console
+
+Applying Migrattions: 
+Update-Database -Project MyPortfolio.DataAccess -StartupProject MyPortfolio.Web → For Package Manager Console
 
