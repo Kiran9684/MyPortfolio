@@ -7,6 +7,7 @@ using MyPortfolio.Business.Utilities;
 using MyPortfolio.Models.ViewModels;
 using System.Security.Claims;
 
+
 namespace MyPortfolio.Web.Controllers
 {
     public class UserController : Controller
@@ -37,10 +38,9 @@ namespace MyPortfolio.Web.Controllers
                  * TODO:  
                  * business layer must return some custom response object instead of bool, like vladidation errors, is account locked, password expired etc.
                  */
-
-                if (await _myPortfolioBusiness.ValidateUserAccount(loginDetail)) 
+                if (await _myPortfolioBusiness.ValidateUserAccountAsync(loginDetail)) 
                 {
-                    await CreateAuthCookie(loginDetail);
+                    await CreateAuthCookie(loginDetail); 
                     TempData[ToasterNotificationTypes.SUCCESS] = ToasterNotificationMessages.SUCCESS_LOGIN_WELCOME;
                     return RedirectToAction("Index", "Home");
                 }
@@ -85,19 +85,30 @@ namespace MyPortfolio.Web.Controllers
             }
             else
             {
-                //2.Call BL layer to create user
-                //3.In BL Layer, we nee
-                //post sucess redirect to login page with success message notification
-                
-                TempData[ToasterNotificationTypes.SUCCESS] = ToasterNotificationMessages.REGESTRATION_SUCCESS;
-                return RedirectToAction("Index", "User");
+                var busineesData = await _myPortfolioBusiness.CreateUserAccountAsync(userData);
+
+                if (busineesData.IsSuccess)
+                {
+                    TempData[ToasterNotificationTypes.SUCCESS] = ToasterNotificationMessages.REGESTRATION_SUCCESS;
+                    return RedirectToAction("Index", "User");
+                }
+                else
+                {
+                    foreach(var error in busineesData.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error); //This populates the validation summary in the view "asp-validation-summary"
+                        //The empty string(string.Empty) tells MVC that this error is not associated with any particular field / property.
+                        //Instead, it becomes a model‑level error.
+                    }
+                    return View("RegisterUser");
+                }
             }
         }
 
         [AllowAnonymous]
         public async Task<String> AccessDenied()
         {
-            return "You are not authorized to access this resource.";
+            return await Task.FromResult("You are not authorized to access this resource.");
             //TODO: Create a view for this get a story created. 
         }
 

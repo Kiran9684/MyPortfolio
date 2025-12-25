@@ -1,9 +1,12 @@
-﻿using MyPortfolio.Models.ViewModels;
+﻿using MyPortfolio.Models.AppModels;
+using MyPortfolio.Models.ViewModels;
 
 namespace MyPortfolio.Business
 {
     public interface IMyPortfolioBusiness
     {
-        public Task<bool> ValidateUserAccount(LoginViewModel loginDetail);
+        public Task<bool> ValidateUserAccountAsync(LoginViewModel loginDetail);
+
+        public Task<BusinessData> CreateUserAccountAsync(UserRegistrationViewModel userData);
     }
 }
