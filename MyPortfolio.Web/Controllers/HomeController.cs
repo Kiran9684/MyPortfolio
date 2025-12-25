@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyPortfolio.Web.Models;
+using MyPortfolio.Models.ViewModels;
 using System.Diagnostics;
 
 namespace MyPortfolio.Web.Controllers
 {
+
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -12,6 +15,7 @@ namespace MyPortfolio.Web.Controllers
         {
             _logger = logger;
         }
+
 
         public IActionResult Index()
         {

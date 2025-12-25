@@ -1,0 +1,70 @@
+﻿@using MyPortfolio.Models.ViewModels;
+@{
+    Layout = "_LayoutRegister";
+}
+
+@model UserRegistrationViewModel;
+
+<script>
+    $(document).ready(function () {
+        $("#registerForm").on("submit", function (e) {
+            var pass = $("#inputPassword").val();
+            var confirmPass = $("#inputPasswordCopy").val();
+
+            if (pass !== confirmPass) {
+                e.preventDefault(); // stop form submission
+                //alert("Passwords do not match!");
+                $(".passVerification").empty();
+                $(".passVerification").append('Passwords do not match!');
+                $("#inputPasswordCopy").focus();
+            }
+        });
+    });
+</script>
+
+
+
+<div class="container d-flex justify-content-end position-absolute top-50 start-50 translate-middle">
+    <div class="card" style="width: 30rem;">
+        <div class="card-body">
+            <h5 class="card-title">User Details:</h5>
+            <form method="post" id="registerForm">
+                <div class="mb-3">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Enter FullName :</label>
+                    <input asp-for = "FullName" type="text" id="fullName" class="form-control">
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email address :</label>
+                    <input asp-for = "EmailAddress" type="email" class="form-control" id="userEmail" placeholder="name@example.com">
+                    <span asp-validation-for="EmailAddress" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label for="inputPassword" class="form-label fw-bold">Password :</label>
+                    <input asp-for = "Password" type="password" id="inputPassword" class="form-control">
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label for="inputPasswordCopy" class="form-label fw-bold">Confirm Password :</label>
+                    <input type="password" id="inputPasswordCopy" class="form-control">
+                    <span class="text-danger passVerification"></span>
+                </div>
+
+                <button class="btn btn-primary" asp-controller="User" asp-action="CreateUser">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* <div>
+    here include jquery or js script to validate password and confirm password. 
+
+    So, when submit button is clicked, it will check whether password and confirm password are same or not. and then allow to submit the form.
+
+</div> *@

@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using MyPortfolio.Business.Extensions;
+using MyPortfolio.Models.AppModels;
 namespace MyPortfolio.Web
 {
     public class Program
@@ -8,6 +11,28 @@ namespace MyPortfolio.Web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            //Main line: Enable cookie-based authentication
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(
+                    options =>
+                    {
+                        options.ExpireTimeSpan = TimeSpan.FromMinutes(2);
+                        options.SlidingExpiration = true;
+                        options.LoginPath = "/User/Index";  //Redirect here if user is not logged in
+                        options.AccessDeniedPath = "/User/AccessDenied";  //Redirect here if user is not authorized to access a resource but logged in
+                    }
+                ); //Handler
+
+            // Needed if you want to access HttpContext outside controllers
+            builder.Services.AddHttpContextAccessor();
+
+            ConfigData configData = new ConfigData
+            {
+                DbConnectionString = builder.Configuration.GetSection("MyPortfolioDBConfig")["ConnectionString"]
+            };
+            builder.Services.AddBusinessAccessServices(configData);
+
 
             var app = builder.Build();
 
@@ -22,14 +47,17 @@ namespace MyPortfolio.Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            var cookiePolicyOptions = new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.Strict
+            };
+            app.UseCookiePolicy(cookiePolicyOptions);
             app.UseRouting();
-
-            app.UseAuthorization();
-
+            app.UseAuthentication();
+            app.UseAuthorization();    
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
-
+                pattern: "{controller=User}/{action=Index}/{id?}");
             app.Run();
         }
     }
