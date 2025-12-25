@@ -18,7 +18,7 @@ namespace MyPortfolio.DataAccess.Repositories
 
         public async Task<User> FindUserByEmailAsync(string emailAddress)
         {
-           var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == emailAddress);
+           var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == emailAddress);
            return user;
         }
 
