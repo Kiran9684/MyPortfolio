@@ -14,8 +14,7 @@ This document outlines the core business logic and data flow sequences for the *
 4.  **Completion:** Controller generates an encrypted Authentication Cookie.
 
 ### 🖼️ Visual Flow
-*(Replace the link below with your actual Napkin AI image path, e.g., `docs/images/auth-flow.png`)*
-![User Authentication Flow](./docs/images/auth_flow_placeholder.png)
+[User Authentication Flow](./images/auth_flow_placeholder.png)
 
 ## 2. User Registration
 **Feature:** New user account creation with duplicate checks and secure password hashing.
@@ -34,5 +33,4 @@ This document outlines the core business logic and data flow sequences for the *
 5.  **Completion:** Controller redirects the user to the Login page.
 
 ### 🖼️ Visual Flow
-*(Replace the link below with your actual Napkin AI image path)*
-![User Registration Flow](./docs/images/registration_flow_placeholder.png)
+[User Registration Flow](./images/registration_flow_placeholder.png)
