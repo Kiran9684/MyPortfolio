@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using MyPortfolio.DataAccess.Context;
 using MyPortfolio.DataAccess.EntityModels;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MyPortfolio.DataAccess.Repositories
 {
@@ -16,16 +17,30 @@ namespace MyPortfolio.DataAccess.Repositories
             this._logger = logger;
         }
 
-        public async Task<User> FindUserByEmailAsync(string emailAddress)
+        public async Task<User> FindUserByEmailAsync(string emailAddress, bool readOnly = true)
         {
-           var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == emailAddress);
-           return user;
+            IQueryable<User> query = _dbContext.Users;
+
+            if(readOnly)
+            {
+                query = query.AsNoTracking();
+            }
+
+            var user = await query.FirstOrDefaultAsync(u => u.Email == emailAddress);
+           
+            return user;
         }
 
         public async Task<bool> CreateUserAsync(User newUser)
         {
            _dbContext.Users.Add(newUser);
             return await _dbContext.SaveChangesAsync() > 0 ? true : false;
+        }
+
+        public async Task UpdateUserLastLoginAsync(User user)
+        {
+            user.LastLoginDate = DateTime.UtcNow;
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

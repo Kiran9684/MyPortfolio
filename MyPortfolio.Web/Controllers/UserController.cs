@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyPortfolio.Business;
 using MyPortfolio.Business.Utilities;
+using MyPortfolio.Models.AppModels;
 using MyPortfolio.Models.ViewModels;
 using System.Security.Claims;
 
@@ -34,20 +35,16 @@ namespace MyPortfolio.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                /*
-                 * TODO:  
-                 * business layer must return some custom response object instead of bool, like vladidation errors, is account locked, password expired etc.
-                 */
-                if (await _myPortfolioBusiness.ValidateUserAccountAsync(loginDetail)) 
+                var businessData = await _myPortfolioBusiness.ValidateUserAccountAsync(loginDetail);
+                if (businessData.IsSuccess) 
                 {
-                    await CreateAuthCookie(loginDetail); 
+                    await CreateAuthCookie((CookieInformation)businessData.AdditionalData); 
                     TempData[ToasterNotificationTypes.SUCCESS] = ToasterNotificationMessages.SUCCESS_LOGIN_WELCOME;
                     return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    //ModelState.AddModelError("loginFailure", "Invalid Login Credentials"); //This populates the validation summary in the view "asp-validation-summary"
-                    TempData[ToasterNotificationTypes.ERROR] = ToasterNotificationMessages.ERROR_INVALID_CREDENTIALS;
+                    TempData[ToasterNotificationTypes.ERROR] = businessData.Errors[0];
                     return View("Index");
                 }
             }
@@ -112,15 +109,14 @@ namespace MyPortfolio.Web.Controllers
             //TODO: Create a view for this get a story created. 
         }
 
-        private async Task CreateAuthCookie(LoginViewModel loginDetail)
+        private async Task CreateAuthCookie(CookieInformation info)
         {
             //Step 1: Define who the user is (claims)
             var claims = new List<Claim>
                     {
-                        new Claim(ClaimTypes.Name, loginDetail.EmailAddress)
-                        //new Claim(ClaimTypes.Role, "Administrator"), 
-                        //coud be used for role based authorization 
-                        // we can use this when we build admin panel for the application
+                        new Claim(ClaimTypes.Name, info.UserName),
+                        new Claim(ClaimTypes.Email, info.UserEmail)
+                        //new Claim(ClaimTypes.Role, "Administrator"), //coud be used for role based authorization we can use this when we build admin panel for the application
                     };
 
             //Step 2: Pack claims into identity
