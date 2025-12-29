@@ -54,3 +54,6 @@ Add-Migration InitialCreate -Project MyPortfolio.DataAccess -StartupProject MyPo
 Applying Migrattions: 
 Update-Database -Project MyPortfolio.DataAccess -StartupProject MyPortfolio.Web → For Package Manager Console
 
+Script Generation Command: 
+Script-Migration -Project MyPortfolio.DataAccess -StartupProject MyPortfolio.Web  -Idempotent  → For Package Manager Console
+
