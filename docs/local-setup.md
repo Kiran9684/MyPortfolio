@@ -102,3 +102,6 @@ To access via `http://[your-custom-name].local`:
     ```text
     127.0.0.1   [your-custom-name].local
     ```
+---
+
+## Issues Resolved During Local Setup: 
