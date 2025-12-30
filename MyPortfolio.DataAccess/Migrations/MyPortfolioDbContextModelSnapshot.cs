@@ -71,7 +71,8 @@ namespace MyPortfolio.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("Email");
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("user", (string)null);
                 });

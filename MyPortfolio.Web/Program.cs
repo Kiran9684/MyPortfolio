@@ -17,10 +17,11 @@ namespace MyPortfolio.Web
                 .AddCookie(
                     options =>
                     {
-                        options.ExpireTimeSpan = TimeSpan.FromMinutes(2);
+                        options.ExpireTimeSpan = TimeSpan.FromMinutes(1);
                         options.SlidingExpiration = true;
                         options.LoginPath = "/User/Index";  //Redirect here if user is not logged in
-                        options.AccessDeniedPath = "/User/AccessDenied";  //Redirect here if user is not authorized to access a resource but logged in
+                        options.AccessDeniedPath = "/User/AccessDenied";  //Redirect here if user is not authorized to access a resource but logged in 
+                        //TODO: This functionality to be tested - Access denied path
                     }
                 ); //Handler
 

@@ -5,7 +5,7 @@ namespace MyPortfolio.Business
 {
     public interface IMyPortfolioBusiness
     {
-        public Task<bool> ValidateUserAccountAsync(LoginViewModel loginDetail);
+        public Task<BusinessData> ValidateUserAccountAsync(LoginViewModel loginDetail);
 
         public Task<BusinessData> CreateUserAccountAsync(UserRegistrationViewModel userData);
     }

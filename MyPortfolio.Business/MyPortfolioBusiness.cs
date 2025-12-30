@@ -18,30 +18,46 @@ namespace MyPortfolio.Business
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<bool> ValidateUserAccountAsync(LoginViewModel loginDetail)
+        public async Task<BusinessData> ValidateUserAccountAsync(LoginViewModel loginDetail)
         {
+            var businessData = new BusinessData();
 
-            /*
-             TODO: 
-                -- Validate user credentials against database
-                -- If valid, proceed to create claims and sign in
-                    --hash the password with salt and compare with the database stored hash password
-                -- If invalid, return to login view with error message
+            var userInfo  = await _userRepository.FindUserByEmailAsync(loginDetail.EmailAddress, readOnly:false);
 
-                --Keep seperate models for loginview and actual user model for database. 
-                --Append LastUserModified info into claims for reaction to the backend changes. 
-            */
-            await Task.Delay(500); 
-
-            if(loginDetail.EmailAddress == "admin@gmail.com")
+            if (userInfo is null)
             {
-                return true;
+                businessData.IsSuccess = false;
+                businessData.Errors = new List<string>() { AppMessage.ERROR_INVALID_CREDENTIALS };
             }
             else
             {
-                return false;
-            }
+                bool passwordValidity = _passwordHasher.VerifyPassword(new HashPasswordInfo() { HashedPassword = userInfo.PasswordHash, Salt = userInfo.PasswordSalt }, loginDetail.Password);
 
+                if (passwordValidity)
+                {
+                    await _userRepository.UpdateUserLastLoginAsync(userInfo);
+
+                    if (userInfo.IsActive)
+                    {
+                        businessData.IsSuccess = true;
+                        businessData.Errors = new List<string>();
+                        businessData.AdditionalData = new CookieInformation() { UserName = $"{userInfo.FirstName} {userInfo.LastName}", UserEmail = userInfo.Email };
+                    }
+                    else
+                    {
+                        businessData.IsSuccess = false;
+                        businessData.Errors = new List<string>() { AppMessage.ERROR_USER_EXISTS_INACTIVE };
+                    }
+
+
+                }
+                else
+                {
+                    businessData.IsSuccess = false;
+                    businessData.Errors = new List<string>() { AppMessage.ERROR_INVALID_CREDENTIALS };
+                }
+            }
+            return businessData;
         }
 
         public async Task<BusinessData> CreateUserAccountAsync(UserRegistrationViewModel userData)
