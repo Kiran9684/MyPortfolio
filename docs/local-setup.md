@@ -105,3 +105,46 @@ To access via `http://[your-custom-name].local`:
 ---
 
 ## Issues Resolved During Local Setup: 
+
+** Error Symptom: **  
+If this step is skipped, you may encounter the following error when running the application in IIS:
+
+> ` HTTP Error 500.19 - Internal Server Error (0x8007000d): The requested page cannot be accessed because the related configuration data for the page is invalid. `
+
+### Steps to Fix
+
+1. ** Verify ASP.NET Core Hosting Bundle **  
+   * Open IIS Manager and go to **Modules**.  
+   * Ensure that **AspNetCoreModuleV2** is listed.  
+   * If missing, install the [ASP.NET Core Hosting Bundle](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-aspnetcore-8.0-windows-hosting-bundle-installer) matching your project runtime.
+
+2. ** Validate web.config **  
+   * Open `web.config` in Visual Studio Code or Notepad++.  
+   * Ensure it is valid XML and saved as **UTF-8 without BOM**.  
+   * Simplify to a minimal valid configuration if needed:
+     ```xml
+     <?xml version="1.0" encoding="utf-8"?>
+     <configuration>
+       <system.webServer>
+         <handlers>
+           <add name="aspNetCore" path="*" verb="*" modules="AspNetCoreModuleV2" resourceType="Unspecified" />
+         </handlers>
+         <aspNetCore processPath="dotnet" arguments=".\MyPortfolio.Web.dll" stdoutLogEnabled="false" stdoutLogFile=".\logs\stdout" hostingModel="inprocess" />
+       </system.webServer>
+     </configuration>
+     ```
+
+3. ** Check File Paths and Permissions **  
+   * Confirm `MyPortfolio.Web.dll` exists in the site root (`D:\learning\MyPortfolioIIS\`).  
+   * Create a `logs` folder and grant **Modify** permissions to `IIS_IUSRS`.  
+
+4. ** Restart IIS **  
+   * Run `iisreset` in an elevated Command Prompt.  
+   * Reopen the site at `http://localhost:8080`.
+
+---
+
+## Issues Resolved During Local Setup:
+- SQL login error for `IIS APPPOOL\MyPortfolioApp`.  
+- IIS configuration error `HTTP 500.19 (0x8007000d)` due to missing AspNetCoreModuleV2 or invalid `web.config`.  
+
