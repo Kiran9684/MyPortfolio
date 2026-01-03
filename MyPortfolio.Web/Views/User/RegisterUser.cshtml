@@ -18,6 +18,13 @@
                 $(".passVerification").append('Passwords do not match!');
                 $("#inputPasswordCopy").focus();
             }
+            var regexpd = /^(?=.{8,}$)(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W).*$/;
+            if(!regexpd.test(pass)){
+                e.preventDefault(); // stop form submission
+                $(".passVerification").empty();
+                $(".passVerification").append('Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
+                $("#inputPassword").focus();
+            }
         });
     });
 </script>
