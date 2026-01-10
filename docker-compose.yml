@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # SERVICE 1: The Database (SQL Server 2019)
+  # ==========================================
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: myportfolio_db
+    user: root # <--- ADD THIS LINE (Fixes the permission error)
+    environment:
+      - ACCEPT_EULA=Y
+      # PASSWORD RULES: At least 8 chars, Uppercase, Lowercase, Number.
+      # If too simple, the container will silently shut down!
+      - SA_PASSWORD=MyStrong!Pass123 
+    ports:
+      - "1433:1433" # Maps localhost:1433 (your laptop) -> Container:1433
+    volumes:
+      - sql_data:/var/opt/mssql/data # PERSISTENCE: Saves data here so it survives restarts
+    networks:
+      - my_network
+
+  # ==========================================
+  # SERVICE 2: Your Web Application
+  # ==========================================
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile # Uses the file we just fixed
+    container_name: myportfolio-web
+    depends_on:
+      - db # Wait for DB to start before starting app
+    ports:
+      - "5000:8080" # Maps localhost:5000 -> Container:8080
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # THE MAGIC: We override the connection string here!
+      # 'Server=db' works because Docker creates a DNS entry for the service name "db".
+      - MyPortfolioDBConfig__ConnectionString=Server=db,1433;Database=MyPortfolioDb;User Id=sa;Password=MyStrong!Pass123;TrustServerCertificate=True;
+    networks:
+      - my_network
+
+# Define the shared volume and network
+volumes:
+  sql_data:
+
+networks:
+  my_network:
+    driver: bridge
