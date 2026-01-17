@@ -12,9 +12,9 @@ namespace MyPortfolio.Business.Utilities
 {
     public class PasswordHasher : IPasswordHasher
     {
-        private readonly ILogger<PasswordHasher> _logger;
+        private readonly ILogger<IPasswordHasher> _logger;
 
-        public PasswordHasher(ILogger<PasswordHasher> logger)
+        public PasswordHasher(ILogger<IPasswordHasher> logger)
         {
             this._logger = logger;
         }
