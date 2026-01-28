@@ -35,10 +35,11 @@ namespace MyPortfolio.Business
 
                 if (passwordValidity)
                 {
-                    await _userRepository.UpdateUserLastLoginAsync(userInfo);
-
+                   
                     if (userInfo.IsActive)
                     {
+                        await _userRepository.UpdateUserLastLoginAsync(userInfo);
+
                         businessData.IsSuccess = true;
                         businessData.Errors = new List<string>();
                         businessData.AdditionalData = new CookieInformation() { UserName = $"{userInfo.FirstName} {userInfo.LastName}", UserEmail = userInfo.Email };
@@ -48,8 +49,6 @@ namespace MyPortfolio.Business
                         businessData.IsSuccess = false;
                         businessData.Errors = new List<string>() { AppMessage.ERROR_USER_EXISTS_INACTIVE };
                     }
-
-
                 }
                 else
                 {
