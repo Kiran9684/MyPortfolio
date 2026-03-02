@@ -25,10 +25,7 @@
                 <a class="navbar-brand"  asp-controller="Home" asp-action="Index">
                     <img src="~/images/app-logo.png" class="img-fluid" alt="..." style="max-width: 150px;">
                 </a>
-
-                <a id="signOutButton" class="btn btn-primary" asp-controller="User" asp-action="SignOutUser">
-                    SignOut
-                </a>
+                @await Component.InvokeAsync("UserProfileDropdown")
             </div>
         </nav>
     </header>
