@@ -22,6 +22,11 @@ namespace MyPortfolio.DataAccess.EntityConfigs
             entityBuilder.Property(e => e.IsActive).HasColumnType("bit").HasDefaultValue(true).IsRequired();// 
             entityBuilder.Property(e => e.Role).HasColumnType("int").IsRequired(required: false);//custom column type and nullable
             entityBuilder.Property(e => e.ProfilePictureUrl).HasColumnType("varchar(500)").IsRequired(required: false);//custom column type and nullable
+            entityBuilder.Property(e => e.Address1).HasColumnType("varchar(255)").IsRequired();//custom column type and not null constraint)
+            entityBuilder.Property(e => e.Address2).HasColumnType("varchar(255)").IsRequired(required: false);//custom column type and nullable
+            entityBuilder.Property(e => e.City).HasColumnType("varchar(100)").IsRequired();//custom column type and not null constraint
+            entityBuilder.Property(e => e.State).HasColumnType("varchar(100)").IsRequired();//custom column type and not null constraint
+            entityBuilder.Property(e => e.ZipCode).HasColumnType("varchar(20)").IsRequired();//custom column type and not null constraint
         }
     }
 }
