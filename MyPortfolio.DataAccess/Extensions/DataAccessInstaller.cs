@@ -12,7 +12,7 @@ namespace MyPortfolio.DataAccess.Extensions
             //DO DI registration for DbContext here.
             services.AddDbContext<MyPortfolioDbContext>(dbOptions =>
             {
-                dbOptions.UseSqlServer(configData.DbConnectionString);
+                dbOptions.UseSqlServer(configData.DbConnectionString); //TODO:We cant keep the connection string in appsettings.json file. We need to use Azure Key Vault or some other secure way to store the connection string. For now, we will keep it in appsettings.json file for simplicity.
             });
 
             //Do DI registration for other DAL repositories here.
