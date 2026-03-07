@@ -109,6 +109,44 @@ namespace MyPortfolio.Web.Controllers
             //TODO: Create a view for this get a story created. 
         }
 
+
+        [Authorize]
+        public IActionResult UserProfile()
+        {
+            //Here you should read user details from request, then using the detail like user email , call db and pull complete user details
+            //populate the view model and pass to view, for now I am hardcoding the values. 
+            //In future we shall store the data in session for the first time when user logins and then we can read the data from session to populate the view model.
+            var model = new UserProfileViewModel
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "kirankumarbs1034@gmail.com",
+                Address1 = "123 Main St",
+                Address2 = "Apt 4B",
+                City = "Anytown",
+                State = "CA",
+                ZipCode = "12345",
+                IsActive = true
+            };
+            return View(model);
+        }
+
+        [Authorize]
+        public IActionResult SaveUserProfile(UserProfileViewModel usrProfileDetails)
+        {
+            if (ModelState.IsValid)
+            {
+                //First update the user details in db, then redirect to user profile page, so that we can see the updated details in view, here we are not saving the data to db, so we will not see any changes in the view.
+                //Display toast message to mention that user details updated successfully. 
+                return RedirectToAction("UserProfile");
+                //By redirecting to action, we will get the latest data from db and display to user, here we are not saving the data to db, so we will not see any changes in the view.
+            }
+            else
+            {
+                return View("UserProfile", usrProfileDetails);
+            }
+        }
+
         private async Task CreateAuthCookie(CookieInformation info)
         {
             //Step 1: Define who the user is (claims)
