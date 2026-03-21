@@ -30,6 +30,17 @@ namespace MyPortfolio.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Address1")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Address2")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
@@ -68,6 +79,14 @@ namespace MyPortfolio.DataAccess.Migrations
 
                     b.Property<int?>("Role")
                         .HasColumnType("int");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("ZipCode")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("Id");
 
