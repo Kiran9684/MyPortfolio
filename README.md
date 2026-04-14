@@ -29,35 +29,36 @@ MyPortfolio.Web is a multi-layered web application for user portfolio management
 
 ## Project Structure
 
-MyPortfolio.Web/
+```text
+MyPortfolio/
+├── MyPortfolio.Web/
+│   ├── Controllers/           # MVC Controllers (User, Home, etc.)
+│   ├── ViewComponents/        # Custom View Components (MainMenu, UserProfileDropdown)
+│   ├── Views/
+│   │   ├── Shared/            # Shared layouts, partials, notifications
+│   │   ├── User/              # User-related views (login, register, profile)
+│   │   └── Home/              # Home and privacy views
+│   ├── wwwroot/
+│   │   ├── css/               # Custom CSS (e.g., homePageSideBar.css)
+│   │   ├── js/                # Custom JS
+│   │   └── lib/               # Third-party libraries (Bootstrap, jQuery, Toastr, FontAwesome)
+│   └── Program.cs             # Application startup and middleware configuration
 │
-├── Controllers/                # MVC Controllers (User, Home, etc.)
-├── ViewComponents/             # Custom View Components (MainMenu, UserProfileDropdown)
-├── Views/
-│   ├── Shared/                 # Shared layouts, partials, notifications
-│   ├── User/                   # User-related views (login, register, profile)
-│   └── Home/                   # Home and privacy views
-├── wwwroot/
-│   ├── css/                    # Custom CSS (e.g., homePageSideBar.css)
-│   ├── js/                     # Custom JS
-│   └── lib/                    # Third-party libraries (Bootstrap, jQuery, Toastr, FontAwesome)
-├── Program.cs                  # Application startup and middleware configuration
+├── MyPortfolio.Business/
+│   ├── Extensions/            # DI registration for business layer
+│   ├── Utilities/             # Helpers (e.g., password hashing, notifications)
+│   └── MyPortfolioBusiness.cs # Business logic implementation
 │
-MyPortfolio.Business/
-│   ├── Extensions/             # DI registration for business layer
-│   ├── Utilities/              # Helpers (e.g., password hashing, notifications)
-│   └── MyPortfolioBusiness.cs  # Business logic implementation
+├── MyPortfolio.DataAccess/
+│   ├── Context/               # EF Core DbContext and design-time factory
+│   ├── EntityModels/          # Database entities (User, etc.)
+│   ├── Extensions/            # DI registration for data access layer
+│   └── Repositories/          # Repository interfaces and implementations
 │
-MyPortfolio.DataAccess/
-│   ├── Context/                # EF Core DbContext and design-time factory
-│   ├── EntityModels/           # Database entities (User, etc.)
-│   ├── Extensions/             # DI registration for data access layer
-│   └── Repositories/           # Repository interfaces and implementations
-│
-MyPortfolio.Models/
-│   ├── AppModels/              # Core models (BusinessData, ConfigData)
-│   └── ViewModels/             # View models for UI (Login, Registration, UserProfile)
-
+└── MyPortfolio.Models/
+    ├── AppModels/             # Core models (BusinessData, ConfigData)
+    └── ViewModels/            # View models for UI (Login, Registration, UserProfile)
+```
 ---
 
 ## Architecture Overview
