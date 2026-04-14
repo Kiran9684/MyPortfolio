@@ -9,41 +9,45 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MyPortfolio.Web.styles.css" asp-append-version="true" />
     <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
+    <link href="~/css/homepagesidebar.css" rel="stylesheet" />
     <!-- Toastr - Maintain the same order -->
     <!-- Toastr CSS -->
     <link href="~/lib/toastr/content/toastr.min.css" rel="stylesheet" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <!-- Toastr JS -->
     <script src="~/lib/toastr/scripts/toastr.min.js"></script>
-
-
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+<body class="vh-100 d-flex flex-column overflow-hidden">
+    <header class="border flex-shrink-0">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow" style="background-color:#ffffff">
             <div class="container-fluid">
-                <a class="navbar-brand"  asp-controller="Home" asp-action="Index">
-                    <img src="~/images/app-logo.png" class="img-fluid" alt="..." style="max-width: 150px;">
+                <a class="navbar-brand p-0"  asp-controller="Home" asp-action="Index">
+                    <img src="~/images/app-logo.png" class="img-fluid" alt="..." style="max-width: 120px;">
                 </a>
                 @await Component.InvokeAsync("UserProfileDropdown")
             </div>
         </nav>
     </header>
-    <div class="container">
-        <partial name="_Notification"></partial>
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <partial name="_Notification"></partial>
+    <div class="container-fluid d-flex flex-grow-1 overflow-hidden p-0">
+        @await Component.InvokeAsync("MainMenu")
+        <div class="content-area d-flex flex-column flex-grow-1 h-100 bg-light overflow-auto">
+            <main role="main" class="pb-3 flex-grow-1" style="background-color : #f4f6f9">
+                @RenderBody()
+            </main>
+            <footer class="border-top text-muted p-3 mt-auto footer-custom">
+                <div class="container-fluid text-center">
+                    &copy; 2025 - MyPortfolio.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                </div>
+            </footer>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - MyPortfolio.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     @* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/pages/mainmenu/MainMenu.js" type="module"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
