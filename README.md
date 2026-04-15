@@ -77,7 +77,7 @@ MyPortfolio/
 ---
 
 ## Main Design Diagram
-
+```mermaid
 flowchart TD
     A["Browser"] --> B["Controller (User, Home)"]
     B --> C["Business Layer (IMyPortfolioBusiness)"]
@@ -87,7 +87,7 @@ flowchart TD
     B --> G["View (Razor Pages)"]
     G --> H["View Components"]
     G --> I["Partial Views"]
-
+```
 ---
 
 ## Request Processing Flow
