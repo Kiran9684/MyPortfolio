@@ -80,7 +80,11 @@ namespace MyPortfolio.Business
                     PasswordHash = hashedPassInfo.HashedPassword,
                     PasswordSalt = hashedPassInfo.Salt,
                     CreatedDate = DateTime.UtcNow,
-                    IsActive = true
+                    IsActive = true,
+                    Address1 = string.Empty,
+                    City = string.Empty,
+                    State = string.Empty,
+                    ZipCode = string.Empty
                 };
 
                 //3.Save to database using repository
