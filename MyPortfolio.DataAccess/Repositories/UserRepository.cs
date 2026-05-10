@@ -17,17 +17,25 @@ namespace MyPortfolio.DataAccess.Repositories
             this._logger = logger;
         }
 
-        public async Task<User> FindUserByEmailAsync(string emailAddress, bool readOnly = true)
+        public async Task<User> FindUserAsync(string? emailAddress = null,string? userId = null,bool readOnly = true)
         {
             IQueryable<User> query = _dbContext.Users;
-
+            User? user = null;
             if(readOnly)
             {
                 query = query.AsNoTracking();
             }
-
-            var user = await query.FirstOrDefaultAsync(u => u.Email == emailAddress);
            
+            if(userId is not null)
+            {
+                //string[] userFnLn = userName.Split(' ');
+                user = await query.FirstOrDefaultAsync(u => u.Id == int.Parse(userId));
+            }
+            else
+            {
+                user = await query.FirstOrDefaultAsync(u => u.Email == emailAddress);
+            }
+
             return user;
         }
 
@@ -41,6 +49,11 @@ namespace MyPortfolio.DataAccess.Repositories
         {
             user.LastLoginDate = DateTime.UtcNow;
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<int> UpdateUserDetails(User user)
+        {
+            return await _dbContext.SaveChangesAsync();
         }
     }
 }

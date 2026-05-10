@@ -8,5 +8,9 @@ namespace MyPortfolio.Business
         public Task<BusinessData> ValidateUserAccountAsync(LoginViewModel loginDetail);
 
         public Task<BusinessData> CreateUserAccountAsync(UserRegistrationViewModel userData);
+
+        public Task<BusinessData<UserProfileViewModel>> GetUserDetail(UserLoginDetail userDetail);
+
+        public Task<BusinessData> UpdateUserProfileAsync(UserProfileViewModel userDetail, string userId);
     }
 }

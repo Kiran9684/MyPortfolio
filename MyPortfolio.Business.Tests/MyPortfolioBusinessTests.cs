@@ -58,7 +58,7 @@ namespace MyPortfolio.Business.Tests
             // Configure repository to return the provided `user` when searching by email.
             // The `It.IsAny<string>()` and `It.IsAny<bool>()` allow any arguments in the call;
             // the test controls behavior by providing the `user` parameter.
-            _userRepositoryMock.Setup(repo => repo.FindUserByEmailAsync(It.IsAny<string>(), It.IsAny<bool>()))
+            _userRepositoryMock.Setup(repo => repo.FindUserAsync(It.IsAny<string>(), It.IsAny<string>(),It.IsAny<bool>()))
                                .ReturnsAsync(user);
 
             // Configure password hasher mock to return the desired verification result.
@@ -159,7 +159,7 @@ namespace MyPortfolio.Business.Tests
         private void MockSetupsFor_CreateUserAccountAsync(User? user)
         {
             // Configure repository find call to return `user` (or null).
-            _userRepositoryMock.Setup(repo => repo.FindUserByEmailAsync(It.IsAny<string>(), It.IsAny<bool>()))
+            _userRepositoryMock.Setup(repo => repo.FindUserAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
                                .ReturnsAsync(user);
 
             // Configure password hasher to return a HashPasswordInfo object when hashing.
@@ -310,7 +310,7 @@ namespace MyPortfolio.Business.Tests
             };
 
             // Simulate "no existing user"
-            _userRepositoryMock.Setup(repo => repo.FindUserByEmailAsync(It.IsAny<string>(), It.IsAny<bool>()))
+            _userRepositoryMock.Setup(repo => repo.FindUserAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
                                .ReturnsAsync((User?)null);
 
             // Simulate hash failure (exception)
@@ -334,7 +334,7 @@ namespace MyPortfolio.Business.Tests
             };
 
             // Simulate repository find throwing
-            _userRepositoryMock.Setup(repo => repo.FindUserByEmailAsync(It.IsAny<string>(), It.IsAny<bool>()))
+            _userRepositoryMock.Setup(repo => repo.FindUserAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
                                .ThrowsAsync(new Exception("db error"));
 
             // Act & Assert: exception propagates
@@ -354,7 +354,7 @@ namespace MyPortfolio.Business.Tests
             };
 
             // Simulate "no existing user"
-            _userRepositoryMock.Setup(repo => repo.FindUserByEmailAsync(It.IsAny<string>(), It.IsAny<bool>()))
+            _userRepositoryMock.Setup(repo => repo.FindUserAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
                                .ReturnsAsync((User?)null);
 
             // Provide deterministic hash info

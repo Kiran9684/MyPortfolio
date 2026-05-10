@@ -22,7 +22,7 @@ namespace MyPortfolio.Business
         {
             var businessData = new BusinessData();
 
-            var userInfo  = await _userRepository.FindUserByEmailAsync(loginDetail.EmailAddress, readOnly:false);
+            var userInfo  = await _userRepository.FindUserAsync(emailAddress:loginDetail.EmailAddress, readOnly:false);
 
             if (userInfo is null)
             {
@@ -42,7 +42,7 @@ namespace MyPortfolio.Business
 
                         businessData.IsSuccess = true;
                         businessData.Errors = new List<string>();
-                        businessData.AdditionalData = new CookieInformation() { UserName = $"{userInfo.FirstName} {userInfo.LastName}", UserEmail = userInfo.Email };
+                        businessData.AdditionalData = new CookieInformation() { UserName = $"{userInfo.FirstName} {userInfo.LastName}", UserEmail = userInfo.Email, UserId = userInfo.Id};
                     }
                     else
                     {
@@ -58,12 +58,11 @@ namespace MyPortfolio.Business
             }
             return businessData;
         }
-
         public async Task<BusinessData> CreateUserAccountAsync(UserRegistrationViewModel userData)
         {
             var businessData = new BusinessData();
             //1.First check if user with same email already exists, if so, throw error back to controller.
-            var user = await _userRepository.FindUserByEmailAsync(userData.EmailAddress);
+            var user = await _userRepository.FindUserAsync(emailAddress:userData.EmailAddress);
 
             if(user == null)
             {
@@ -74,8 +73,8 @@ namespace MyPortfolio.Business
                 string[] userFnLn = userData.FullName.Split(' ');
                 var newUser = new MyPortfolio.DataAccess.EntityModels.User()
                 {
-                    FirstName = userFnLn[0],
-                    LastName = (userFnLn.Length > 1) ? userFnLn[1]: string.Empty,
+                    FirstName = userFnLn[0].Trim(),
+                    LastName = (userFnLn.Length > 1) ? userFnLn[1].Trim(): string.Empty,
                     Email = userData.EmailAddress,
                     PasswordHash = hashedPassInfo.HashedPassword,
                     PasswordSalt = hashedPassInfo.Salt,
@@ -116,6 +115,70 @@ namespace MyPortfolio.Business
                 }
             }
             return businessData;
+        }
+        public async Task<BusinessData<UserProfileViewModel>> GetUserDetail(UserLoginDetail userDetail)
+        {
+            var data = new BusinessData<UserProfileViewModel>();
+
+            var user = await _userRepository.FindUserAsync(emailAddress:userDetail.Email, userDetail.UserId, readOnly: true);
+
+            if(user is not null)
+            {
+                data.IsSuccess = true;
+                data.ViewData = new UserProfileViewModel()
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Address1 = user.Address1,
+                    Address2 = user.Address2 ?? string.Empty,
+                    City = user.City,
+                    State = user.State,
+                    ZipCode = user.ZipCode,
+                    IsActive = user.IsActive
+                };
+            }
+            else
+            {
+                data.IsSuccess =false;
+            }
+            return data;
+        }
+
+        public async Task<BusinessData> UpdateUserProfileAsync(UserProfileViewModel userDetail, string userId)
+        {
+            var data = new BusinessData();
+
+            var user = await _userRepository.FindUserAsync(userId: userId,readOnly:false);
+
+            if(user is not null)
+            {
+                //manually map the properties
+                user.Address1 = userDetail.Address1;
+                user.Address2 = userDetail.Address2;
+                user.City = userDetail.City;
+                user.State = userDetail.State;
+                user.ZipCode = userDetail.ZipCode;
+                user.IsActive = userDetail.IsActive;
+                user.FirstName = userDetail.FirstName;
+                user.LastName = userDetail.LastName;
+
+                var updatedRecordCount = await _userRepository.UpdateUserDetails(user);
+
+                if(updatedRecordCount > 0)
+                {
+                    data.IsSuccess=true;
+                }
+                else
+                {
+                    data.IsSuccess = false;
+                }
+            }
+            else
+            {
+                data.IsSuccess=false;
+            }
+            return data;
         }
     }
 }
