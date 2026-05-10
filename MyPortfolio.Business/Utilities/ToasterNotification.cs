@@ -17,5 +17,8 @@
         public const string SUCCESS_LOGOUT = "You have been logged out successfully.";
         public const string SUCCESS_LOGIN_WELCOME = "Welcome! You have logged in successfully.";
         public const string REGESTRATION_SUCCESS = "Registration completed successfully. Please use your credentials to login.";
+        public const string USERDETAILS_FETCH_ERROR = "Unable to fetch user details. Please try again later or contact support.";
+        public const string USERDETAILS_UPDATE_SUCCESS = "Your profile has been updated successfully.";
+        public const string USERDETAILS_UPDATE_ERROR = "Unable to update profile details. Please try again later or contact support.";
     }
 }

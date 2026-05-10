@@ -9,8 +9,9 @@ namespace MyPortfolio.DataAccess.Repositories
 {
     public interface IUserRepository
     {
-        public Task<User> FindUserByEmailAsync(string emailAddress,bool readOnly = true);
+        public Task<User> FindUserAsync(string emailAddress = null,string? userId =null, bool readOnly = true);
         public Task<bool> CreateUserAsync(User newUser);
         public Task UpdateUserLastLoginAsync(User user);
+        public Task<int> UpdateUserDetails(User user);
     }
 }

@@ -22,14 +22,14 @@ namespace MyPortfolio.Web.Controllers
             this._myPortfolioBusiness = myPortfolioBusiness;
         }
         
-        [HttpGet]
+        //[HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             return View();
         }
 
-        [HttpPost]
+       //[HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Authenticate(LoginViewModel loginDetail)
         {
@@ -56,7 +56,7 @@ namespace MyPortfolio.Web.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        //[HttpGet]
         public async Task<IActionResult> SignOutUser()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -64,15 +64,14 @@ namespace MyPortfolio.Web.Controllers
             return RedirectToAction("Index", "User");
         }
 
-
         [AllowAnonymous]
-        [HttpGet]
+        //[HttpGet]
         public async Task<IActionResult> RegisterUser()
         {
             return View();
         }
 
-        [HttpPost]
+        //[HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> CreateUser(UserRegistrationViewModel userData)
         {
@@ -111,35 +110,65 @@ namespace MyPortfolio.Web.Controllers
 
 
         [Authorize]
-        public IActionResult UserProfile()
+        public async Task<IActionResult> UserProfile()
         {
-            //Here you should read user details from request, then using the detail like user email , call db and pull complete user details
-            //populate the view model and pass to view, for now I am hardcoding the values. 
-            //In future we shall store the data in session for the first time when user logins and then we can read the data from session to populate the view model.
-            var model = new UserProfileViewModel
+            
+            UserProfileViewModel viewModel;
+            //1.Read user email id and name from auth cookie. 
+
+            //Approach 01:
+            //var claimsIdentities = User.Identities.ToList();
+            //claimsIdentities.ForEach(claimIdentiy =>
+            //{
+            //    foreach (var claim in claimIdentiy.Claims)
+            //    {
+            //        if(claim.Type == ClaimTypes.Name)
+            //        {
+            //            user.UserName = claim.Value.ToString();
+            //        }
+
+            //        if(claim.Type == ClaimTypes.Email)
+            //        {
+            //            user.Email = claim.Value.ToString();
+            //        }
+            //    }
+            //});
+
+            //Approach 02:
+            var user = ReadUserInfoFromAuthCookie();
+
+            //2.Business layer call to get user view model.
+            var businessData = await _myPortfolioBusiness.GetUserDetail(user);
+            if (businessData.IsSuccess)
             {
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "kirankumarbs1034@gmail.com",
-                Address1 = "123 Main St",
-                Address2 = "Apt 4B",
-                City = "Anytown",
-                State = "CA",
-                ZipCode = "12345",
-                IsActive = true
-            };
-            return View(model);
+                viewModel = businessData.ViewData;
+                return View(viewModel);
+            }
+            else
+            {
+                TempData[ToasterNotificationTypes.ERROR] = ToasterNotificationMessages.USERDETAILS_FETCH_ERROR;
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [Authorize]
-        public IActionResult SaveUserProfile(UserProfileViewModel usrProfileDetails)
+        public async Task<IActionResult> SaveUserProfile(UserProfileViewModel usrProfileDetails)
         {
             if (ModelState.IsValid)
             {
-                //First update the user details in db, then redirect to user profile page, so that we can see the updated details in view, here we are not saving the data to db, so we will not see any changes in the view.
-                //Display toast message to mention that user details updated successfully. 
-                return RedirectToAction("UserProfile");
-                //By redirecting to action, we will get the latest data from db and display to user, here we are not saving the data to db, so we will not see any changes in the view.
+                var userLoginInfo = ReadUserInfoFromAuthCookie();
+                var data = await _myPortfolioBusiness.UpdateUserProfileAsync(usrProfileDetails,userLoginInfo.UserId);
+
+                if (data.IsSuccess)
+                {
+                    TempData[ToasterNotificationTypes.SUCCESS] = ToasterNotificationMessages.USERDETAILS_UPDATE_SUCCESS;
+                    return RedirectToAction("UserProfile");
+                }
+                else
+                {
+                    TempData[ToasterNotificationTypes.SUCCESS] = ToasterNotificationMessages.USERDETAILS_UPDATE_ERROR; ;
+                    return View("UserProfile", usrProfileDetails);
+                }
             }
             else
             {
@@ -153,7 +182,8 @@ namespace MyPortfolio.Web.Controllers
             var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, info.UserName),
-                        new Claim(ClaimTypes.Email, info.UserEmail)
+                        new Claim(ClaimTypes.Email, info.UserEmail),
+                        new Claim(ClaimTypes.NameIdentifier, info.UserId.ToString())
                         //new Claim(ClaimTypes.Role, "Administrator"), //coud be used for role based authorization we can use this when we build admin panel for the application
                     };
 
@@ -171,6 +201,21 @@ namespace MyPortfolio.Web.Controllers
 
             //Step 4: Create cookie and send to browser
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+            //Step05: 
+            //In future we shall store the data in session for the first time when user logins and then we can read the data from session to populate the view models wherever user info is needed.
+        }
+
+        private UserLoginDetail ReadUserInfoFromAuthCookie()
+        {
+            var user = new UserLoginDetail();
+            user.UserName = User.FindFirstValue(ClaimTypes.Name);
+            user.Email = User.FindFirstValue(ClaimTypes.Email);
+            user.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return user;
+
+            //Need to to inject this as a dependency inject from DI container. 
         }
     }
 }
