@@ -28,6 +28,7 @@ namespace MyPortfolio.Business
             {
                 businessData.IsSuccess = false;
                 businessData.Errors = new List<string>() { AppMessage.ERROR_INVALID_CREDENTIALS };
+                _logger.LogWarning("Login attempt failed for email: {Email}. Reason: User not found.", loginDetail.EmailAddress);
             }
             else
             {
@@ -48,12 +49,14 @@ namespace MyPortfolio.Business
                     {
                         businessData.IsSuccess = false;
                         businessData.Errors = new List<string>() { AppMessage.ERROR_USER_EXISTS_INACTIVE };
+                        _logger.LogWarning("Login attempt failed for email: {Email}. Reason: Account is inactive.", loginDetail.EmailAddress);
                     }
                 }
                 else
                 {
                     businessData.IsSuccess = false;
                     businessData.Errors = new List<string>() { AppMessage.ERROR_INVALID_CREDENTIALS };
+                    _logger.LogWarning("Login attempt failed for email: {Email}. Reason: Invalid password.", loginDetail.EmailAddress);
                 }
             }
             return businessData;
@@ -99,6 +102,7 @@ namespace MyPortfolio.Business
                 {
                     businessData.IsSuccess = false;
                     businessData.Errors = new List<string>() {AppMessage.ERROR_SOMETHING_WENT_WRONG};
+                    _logger.LogError("User creation failed for email: {Email}. Reason: Database operation failed.", userData.EmailAddress);
                 }
             }
             else
@@ -107,11 +111,13 @@ namespace MyPortfolio.Business
                 {
                     businessData.IsSuccess = false;
                     businessData.Errors = new List<string>() { AppMessage.ERROR_USER_ALREADY_EXISTS };
+                    _logger.LogWarning("User creation attempt failed for email: {Email}. Reason: Active user already exists.", userData.EmailAddress);
                 }
                 else
                 {
                     businessData.IsSuccess = false;
                     businessData.Errors = new List<string>() { AppMessage.ERROR_USER_EXISTS_INACTIVE };
+                    _logger.LogWarning("User creation attempt failed for email: {Email}. Reason: Inactive user already exists.", userData.EmailAddress);
                 }
             }
             return businessData;
@@ -137,9 +143,11 @@ namespace MyPortfolio.Business
                     ZipCode = user.ZipCode,
                     IsActive = user.IsActive
                 };
+                
             }
             else
             {
+                _logger.LogWarning("User detail retrieval failed for email: {Email}, userId: {UserId}. Reason: User not found.", userDetail.Email, userDetail.UserId);
                 data.IsSuccess =false;
             }
             return data;
@@ -173,10 +181,12 @@ namespace MyPortfolio.Business
                 {
                     data.IsSuccess = false;
                 }
+                _logger.LogInformation("User profile updated for userId: {UserId}. Updated record count: {UpdatedRecordCount}.", userId, updatedRecordCount);
             }
             else
             {
                 data.IsSuccess=false;
+                _logger.LogWarning("User profile update failed for userId: {UserId}. Reason: User not found.", userId);
             }
             return data;
         }

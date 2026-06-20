@@ -29,7 +29,7 @@ namespace MyPortfolio.Web.Controllers
             return View();
         }
 
-       //[HttpPost]
+        //[HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Authenticate(LoginViewModel loginDetail)
         {
@@ -40,6 +40,7 @@ namespace MyPortfolio.Web.Controllers
                 {
                     await CreateAuthCookie((CookieInformation)businessData.AdditionalData); 
                     TempData[ToasterNotificationTypes.SUCCESS] = ToasterNotificationMessages.SUCCESS_LOGIN_WELCOME;
+                    _logger.LogInformation("User Authentication successful for the user : {Email}", loginDetail.EmailAddress);
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -50,6 +51,7 @@ namespace MyPortfolio.Web.Controllers
             }
             else
             {
+                _logger.LogWarning("User Authentication failed due to invalid model state for the user : {Email}", loginDetail.EmailAddress);
                 TempData[ToasterNotificationTypes.ERROR] = ToasterNotificationMessages.ERROR_INVALID_CREDENTIALS; 
                 return View("Index");
             }
@@ -61,6 +63,7 @@ namespace MyPortfolio.Web.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             TempData[ToasterNotificationTypes.WARNING] = ToasterNotificationMessages.SUCCESS_LOGOUT;
+            _logger.LogInformation("User signed out successfully.");
             return RedirectToAction("Index", "User");
         }
 
@@ -77,6 +80,7 @@ namespace MyPortfolio.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("User registration failed due to invalid model state for the user : {Email}", userData.EmailAddress);
                 return View("RegisterUser"); 
             }
             else
@@ -86,6 +90,7 @@ namespace MyPortfolio.Web.Controllers
                 if (busineesData.IsSuccess)
                 {
                     TempData[ToasterNotificationTypes.SUCCESS] = ToasterNotificationMessages.REGESTRATION_SUCCESS;
+                    _logger.LogInformation("User registration successful for the user : {Email}", userData.EmailAddress);
                     return RedirectToAction("Index", "User");
                 }
                 else
@@ -142,6 +147,7 @@ namespace MyPortfolio.Web.Controllers
             if (businessData.IsSuccess)
             {
                 viewModel = businessData.ViewData;
+                _logger.LogInformation("User details fetched successfully for the user : {Email}", user.Email);
                 return View(viewModel);
             }
             else
@@ -172,6 +178,7 @@ namespace MyPortfolio.Web.Controllers
             }
             else
             {
+                _logger.LogWarning("User profile update failed due to invalid model state for the user : {Email}", usrProfileDetails.Email);
                 return View("UserProfile", usrProfileDetails);
             }
         }
