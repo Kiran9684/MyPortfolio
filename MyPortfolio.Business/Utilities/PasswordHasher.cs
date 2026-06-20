@@ -68,12 +68,12 @@ namespace MyPortfolio.Business.Utilities
 
             if(Convert.ToBase64String(hashBytes) == hashedPasswordWithSalt.HashedPassword)
             {
-                _logger.LogWarning("Password verification success.");
+                _logger.LogInformation("Password verification success.");
                 return true;
             }
             else
             {
-                _logger.LogWarning("Password verification failed.");
+                _logger.LogInformation("Password verification failed.");
                 return false;
             }
         }
