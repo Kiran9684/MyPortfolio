@@ -172,7 +172,7 @@ namespace MyPortfolio.Web.Controllers
                 }
                 else
                 {
-                    TempData[ToasterNotificationTypes.SUCCESS] = ToasterNotificationMessages.USERDETAILS_UPDATE_ERROR; ;
+                    TempData[ToasterNotificationTypes.SUCCESS] = ToasterNotificationMessages.USERDETAILS_UPDATE_ERROR; 
                     return View("UserProfile", usrProfileDetails);
                 }
             }
