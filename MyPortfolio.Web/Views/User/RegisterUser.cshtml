@@ -5,29 +5,7 @@
 
 @model UserRegistrationViewModel;
 
-<script>
-    $(document).ready(function () {
-        $("#registerForm").on("submit", function (e) {
-            var pass = $("#inputPassword").val();
-            var confirmPass = $("#inputPasswordCopy").val();
 
-            if (pass !== confirmPass) {
-                e.preventDefault(); // stop form submission
-                //alert("Passwords do not match!");
-                $(".passVerification").empty();
-                $(".passVerification").append('Passwords do not match!');
-                $("#inputPasswordCopy").focus();
-            }
-            var regexpd = /^(?=.{8,}$)(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W).*$/;
-            if(!regexpd.test(pass)){
-                e.preventDefault(); // stop form submission
-                $(".passVerification").empty();
-                $(".passVerification").append('Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
-                $("#inputPassword").focus();
-            }
-        });
-    });
-</script>
 
 
 
@@ -53,7 +31,7 @@
 
                 <div class="mb-3">
                     <label for="inputPassword" class="form-label fw-bold">Password :</label>
-                    <input asp-for = "Password" type="password" id="inputPassword" class="form-control">
+                    <input asp-for = "Password" type="password" class="form-control">
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
 
@@ -70,6 +48,7 @@
 </div>
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/pages/registeruser/registeruser.js" type="module"></script>
 }
 @* <div>
     here include jquery or js script to validate password and confirm password. 
