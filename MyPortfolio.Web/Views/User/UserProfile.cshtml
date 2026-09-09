@@ -2,10 +2,30 @@
 
 <div class="container">
     <!-- Content here -->
-    <img src="~/images/user_profile_pic_placeholder.png" class="img-thumbnail h-25 w-25" alt="..." />
+    @* <img src="~/images/user_profile_pic_placeholder.png" class="img-thumbnail h-25 w-25 d-block" alt="..." /> *@
+   
+
     <br />
-    <form class="row g-3 mt-3" id = "userProfileDetails">
- @*        <div asp-validation-summary="All"></div> *@
+    <form class="row g-3 mt-1" id = "userProfileDetails">
+        <div class ="col-12">
+            <div class="position-relative d-inline-block mt-4 mb-1">
+
+                <img src="~/images/user_profile_pic_placeholder.png"
+                     id="userimage"
+                     class="img-thumbnail"
+                     style="width: 150px; height: 150px; object-fit: cover;"
+                     alt="User Profile Picture" />
+
+                <button type="button"
+                        class="btn btn-primary position-absolute rounded-circle shadow"
+                        style="bottom: 5px; right: 5px; width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center;"
+                        data-bs-toggle="modal"
+                        data-bs-target="#profilePicModal">
+                    <i class="fa-solid fa-camera"></i>
+                </button>
+            </div>
+        </div>
+        @*<div asp-validation-summary="All"></div> *@
         <div class="col-md-6">
             <label class="form-label" asp-for="FirstName">FirstName</label>
             <input class="form-control" asp-for="FirstName">
@@ -60,7 +80,7 @@
         </div>
     </form>
 </div>
-
+<partial name="_ProfilePicModal" model="new ProfilePictureUploadViewModel()"></partial>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/pages/userprofile/userprofile.js" type="module"></script>

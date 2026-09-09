@@ -18,6 +18,11 @@
     <script src="~/lib/toastr/scripts/toastr.min.js"></script>
 </head>
 <body class="vh-100 d-flex flex-column overflow-hidden">
+    <div id="globalSpinner" class="position-fixed top-0 start-0 w-100 h-100 d-none justify-content-center align-items-center loading-overlay">
+        <div class="spinner-grow text-primary" role="status" style="width: 4rem; height: 4rem;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
     <header class="border flex-shrink-0">
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow" style="background-color:#ffffff">
             <div class="container-fluid">

@@ -20,3 +20,14 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* Custom CSS for the Global Spinner Overlay */
+.loading-overlay {
+    /* A semi-transparent white or black background */
+    background-color: rgba(255, 255, 255, 0.7);
+    /* The magic property that blurs everything behind the div */
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px); /* For Safari support */
+    /* Bootstrap modals use z-index 1055, so 9999 ensures this is ALWAYS on top */
+    z-index: 9999;
+}

@@ -5,7 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using MyPortfolio.Business;
 using MyPortfolio.Business.Utilities;
 using MyPortfolio.Models.AppModels;
+using MyPortfolio.Models.Common;
 using MyPortfolio.Models.ViewModels;
+using MyPortfolio.Web.Facades;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 
@@ -15,11 +18,15 @@ namespace MyPortfolio.Web.Controllers
     {
         private ILogger<UserController> _logger;
         private IMyPortfolioBusiness _myPortfolioBusiness;
+        private IUserFacade _userFacade;
+        private IConfiguration _configuration;
 
-        public UserController(ILogger<UserController> logger, IMyPortfolioBusiness myPortfolioBusiness)
+        public UserController(ILogger<UserController> logger, IMyPortfolioBusiness myPortfolioBusiness, IUserFacade userFacade, IConfiguration configuration)
         {
             this._logger = logger;
             this._myPortfolioBusiness = myPortfolioBusiness;
+            this._userFacade = userFacade;
+            this._configuration = configuration;
         }
         
         //[HttpGet]
