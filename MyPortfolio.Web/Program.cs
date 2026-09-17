@@ -35,7 +35,7 @@ namespace MyPortfolio.Web
 
                 // Needed if you want to access HttpContext outside controllers
                 builder.Services.AddHttpContextAccessor();
-
+                builder.Services.AddScoped<IUserFacade, UserFacade>();
                 ConfigData configData = new ConfigData
                 {
                     DbConnectionString = builder.Configuration.GetSection("MyPortfolioDBConfig")["ConnectionString"]

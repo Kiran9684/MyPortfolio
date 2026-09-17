@@ -12,6 +12,7 @@ namespace MyPortfolio.DataAccess.Context
     public class MyPortfolioDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<UserProfilePicture> Pictures { get; set; }
         public MyPortfolioDbContext(DbContextOptions<MyPortfolioDbContext> options) : base(options)
         {
            
@@ -20,6 +21,7 @@ namespace MyPortfolio.DataAccess.Context
         protected  override void OnModelCreating(ModelBuilder modelBuilder)
         {
             new EntityConfigs.UserEntityConfiguration().Configure(modelBuilder.Entity<User>());
+            new EntityConfigs.UserProfilePictureEntityConfiguration().Configure(modelBuilder.Entity<UserProfilePicture>());
         }
 
     }

@@ -17,10 +17,16 @@ namespace MyPortfolio.DataAccess.Repositories
             this._logger = logger;
         }
 
-        public async Task<User> FindUserAsync(string? emailAddress = null,string? userId = null,bool readOnly = true)
+        public async Task<User> FindUserAsync(string? emailAddress = null,string? userId = null,bool readOnly = true, bool includeProfilePicture = false)
         {
             IQueryable<User> query = _dbContext.Users;
             User? user = null;
+
+            if (includeProfilePicture)
+            {
+                query = query.Include(user => user.ProfilePicture);
+            }
+
             if(readOnly)
             {
                 query = query.AsNoTracking();
@@ -51,7 +57,7 @@ namespace MyPortfolio.DataAccess.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<int> UpdateUserDetails(User user)
+        public async Task<int> UpdateUserDetailsAsync(User user)
         {
             return await _dbContext.SaveChangesAsync();
         }
