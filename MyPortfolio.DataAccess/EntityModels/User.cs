@@ -24,5 +24,6 @@ namespace MyPortfolio.DataAccess.EntityModels
         public string City { get; set; }
         public string State { get; set; }
         public string ZipCode { get; set; }
+        public UserProfilePicture? ProfilePicture { get; set; } //optional 1:1 relation with UserProfilePicture & User entities
     }
 }

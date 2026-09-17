@@ -95,6 +95,53 @@ namespace MyPortfolio.DataAccess.Migrations
 
                     b.ToTable("user", (string)null);
                 });
+
+            modelBuilder.Entity("MyPortfolio.DataAccess.EntityModels.UserProfilePicture", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("ImageData")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ImageType")
+                        .HasColumnType("varchar(25)");
+
+                    b.Property<Guid?>("PublicImageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PublicImageId")
+                        .IsUnique()
+                        .HasFilter("[PublicImageId] IS NOT NULL");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
+
+                    b.ToTable("userProfilePicture", (string)null);
+                });
+
+            modelBuilder.Entity("MyPortfolio.DataAccess.EntityModels.UserProfilePicture", b =>
+                {
+                    b.HasOne("MyPortfolio.DataAccess.EntityModels.User", "User")
+                        .WithOne("ProfilePicture")
+                        .HasForeignKey("MyPortfolio.DataAccess.EntityModels.UserProfilePicture", "UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MyPortfolio.DataAccess.EntityModels.User", b =>
+                {
+                    b.Navigation("ProfilePicture");
+                });
 #pragma warning restore 612, 618
         }
     }

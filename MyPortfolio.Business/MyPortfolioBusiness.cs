@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using MyPortfolio.Business.Utilities;
+using MyPortfolio.DataAccess.EntityModels;
 using MyPortfolio.DataAccess.Repositories;
 using MyPortfolio.Models.AppModels;
+using MyPortfolio.Models.Common;
 using MyPortfolio.Models.ViewModels;
 
 namespace MyPortfolio.Business
@@ -171,7 +173,7 @@ namespace MyPortfolio.Business
                 user.FirstName = userDetail.FirstName;
                 user.LastName = userDetail.LastName;
 
-                var updatedRecordCount = await _userRepository.UpdateUserDetails(user);
+                var updatedRecordCount = await _userRepository.UpdateUserDetailsAsync(user);
 
                 if(updatedRecordCount > 0)
                 {
@@ -189,6 +191,72 @@ namespace MyPortfolio.Business
                 _logger.LogWarning("User profile update failed for userId: {UserId}. Reason: User not found.", userId);
             }
             return data;
+        }
+
+        public async Task<AppResponse<ProfilePictureUpdateResponse>> UpdateProfilePictureAsync(UserLoginDetail userDetail, byte[] imageData, string imageType)
+        {
+            if (imageData != null && imageType != null)
+            {
+                Guid? publicProfilePicId = null;
+                var response = new ProfilePictureUpdateResponse() { ImageId = string.Empty};
+                //1. read user detail
+                var user = await _userRepository.FindUserAsync(userId:userDetail.UserId, emailAddress:userDetail.Email,readOnly:false, includeProfilePicture:true);
+
+                if(user != null)
+                {
+                    if (user.ProfilePicture != null)
+                    {
+                        //over-write image info
+                        publicProfilePicId = Guid.NewGuid();
+                        user.ProfilePicture.ImageData = imageData;
+                        user.ProfilePicture.ImageType = imageType;
+                        user.ProfilePicture.PublicImageId = publicProfilePicId;
+                    }
+                    else
+                    {
+                        //add new image
+                        publicProfilePicId = Guid.NewGuid();
+                        var profilePic = new UserProfilePicture()
+                        {
+                            ImageData = imageData,
+                            ImageType = imageType,
+                            PublicImageId = publicProfilePicId
+                        };
+
+                        user.ProfilePicture = profilePic;
+                    }
+
+                    var updateFlag = await _userRepository.UpdateUserDetailsAsync(user);
+
+                    if (updateFlag > 0)
+                    {
+                        response.ImageId = publicProfilePicId.ToString();
+                        return new AppResponse<ProfilePictureUpdateResponse>(true, response);
+                    }
+                    else
+                    {
+                        return new AppResponse<ProfilePictureUpdateResponse>(false, response)
+                        {
+                            Errors = new List<string> { AppMessage.ERROR_PROFILE_PICTURE_SAVE_FAILED }
+                        };
+                    }
+                }
+                else
+                {
+                    return new AppResponse<ProfilePictureUpdateResponse>(false, null)
+                    {
+                        Errors = new List<string> { AppMessage.ERROR_USER_NOT_FOUND }
+                    };
+                }
+               
+            }
+            else
+            {
+                return new AppResponse<ProfilePictureUpdateResponse>(false, null)
+                {
+                    Errors = new List<string> { AppMessage.ERROR_INVALID_IMAGE_PAYLOAD }
+                };
+            }
         }
     }
 }

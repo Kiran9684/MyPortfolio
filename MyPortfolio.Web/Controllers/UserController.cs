@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MyPortfolio.Business;
 using MyPortfolio.Business.Utilities;
@@ -188,6 +189,56 @@ namespace MyPortfolio.Web.Controllers
                 _logger.LogWarning("User profile update failed due to invalid model state for the user : {Email}", usrProfileDetails.Email);
                 return View("UserProfile", usrProfileDetails);
             }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> UploadUserPicture(ProfilePictureUploadViewModel imageModel)
+        {
+            //TODO: add logging statements
+            if (ModelState.IsValid)
+            {
+                
+                var filesettings = _configuration.GetSection("ProfilePictureSettings").Get<ProfilePictureSettings>();
+                var result = await _userFacade.ValidateProfilePictureAsync(imageModel.ProfilePicture, filesettings); //returns tuple
+                //use a tuple and capture the raw image bytes from ValidateProfilePicAsych method
+                if (result.validation.Success)
+                {
+                    //read user id from cookie
+                    var userInfo = ReadUserInfoFromAuthCookie();
+
+                    //call BL and DL layer 
+                    var response = await _myPortfolioBusiness.UpdateProfilePictureAsync(userInfo, result.imageData, result.imageType);
+
+                    if (response.IsSucess)
+                    {
+                        response.Data.imageUrl = Url.Action("GetUserProfilePicture","User", new { imageId = response.Data.ImageId });
+                        return Json(response); //returns content with 200 OK status code by default
+                    }
+                    else
+                    {
+                        return StatusCode(500, response);
+                    }
+                }
+                else
+                {
+                    var response = new AppResponse<List<string>>(result.validation.Success, result.validation.Messages);
+                    return BadRequest(response);
+                }
+            }
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                .Select(e => e.ErrorMessage)
+                                .ToList();
+                var response = new AppResponse<List<string>>(false, errors);
+                return BadRequest(response);
+            }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> GetUserProfilePicture(string imageId)
+        {
+            return Ok();
         }
 
         private async Task CreateAuthCookie(CookieInformation info)

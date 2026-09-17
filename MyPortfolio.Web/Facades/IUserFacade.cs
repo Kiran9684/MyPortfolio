@@ -5,6 +5,6 @@ namespace MyPortfolio.Web.Facades
 {
     public interface IUserFacade
     {
-        public Task<ValidationResult> ValidateProfilePictureAsync(IFormFile file, ProfilePictureSettings settings);
+        public Task<(ValidationResult validation, byte[]? imageData, string? imageType)> ValidateProfilePictureAsync(IFormFile file, ProfilePictureSettings settings);
     }
 }

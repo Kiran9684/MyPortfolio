@@ -13,5 +13,8 @@ namespace MyPortfolio.Business.Utilities
         public const string ERROR_USER_EXISTS_INACTIVE = "A user account with this email already exists but is inactive. Please contact app support for assistance.";
         public const string ERROR_INVALID_CREDENTIALS = "Invalid email or password. Please try again.";
         public const string ERROR_ACCOUNT_LOCKED = "Your account has been locked. Please contact support.";
+        public const string ERROR_USER_NOT_FOUND = "User account could not be located.";
+        public const string ERROR_PROFILE_PICTURE_SAVE_FAILED = "Failed to commit the profile picture update to the database. Please try again.";
+        public const string ERROR_INVALID_IMAGE_PAYLOAD = "The provided image data or format type is missing.";
     }
 }

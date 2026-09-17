@@ -1,4 +1,5 @@
 ﻿using MyPortfolio.Models.AppModels;
+using MyPortfolio.Models.Common;
 using MyPortfolio.Models.ViewModels;
 
 namespace MyPortfolio.Business
@@ -12,5 +13,7 @@ namespace MyPortfolio.Business
         public Task<BusinessData<UserProfileViewModel>> GetUserDetail(UserLoginDetail userDetail);
 
         public Task<BusinessData> UpdateUserProfileAsync(UserProfileViewModel userDetail, string userId);
+
+        public Task<AppResponse<ProfilePictureUpdateResponse>> UpdateProfilePictureAsync(UserLoginDetail userDetail, byte[] imageData, string imageType);
     }
 }

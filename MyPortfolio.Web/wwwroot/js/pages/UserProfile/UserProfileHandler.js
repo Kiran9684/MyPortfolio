@@ -65,17 +65,27 @@ class UserProfilePageHelpers {
             // Notice we are passing the formData object directly!
             apiService.post(url, formData, {}, "json")
                 .done(function (data, textStatus, jqXHR) {
-                    console.log("done", data, textStatus, jqXHR);
+                    //console.log("done", data, textStatus, jqXHR);
                     toastr.success("Profile picture uploaded successfully!");
                     $('#profilePicModal').modal('hide');
-                    // Update the image src on the UI here //TODO Work
+                    imgTag.attr('src', data.data.imageUrl);
                 })
                 .fail(function (jqXHR, textStatus, errorThrown) {
-                    console.log("fail", jqXHR, textStatus, errorThrown);
-                    toastr.error("Failed to upload image.");
-                    console.error(jqXHR);
-                    //need to handle the response here
+                    let response = jqXHR.responseJSON;
+
+                    if (response && response.errors && response.errors.length > 0) {
+                        response.errors.forEach(function (errorMsg) {
+                            toastr.error(errorMsg);
+                        });
+                    } else {
+                        // 2. Fallback for generic 500 crashes or network failures
+                        toastr.error("Failed to upload image. Please try again.");
+                    }
                 })
+                .always(function () {
+                    // Pro-tip: Always kill your spinner here so it hides regardless of success or failure!
+                    AppUtilities.disableGlobalSpinner(); 
+                });
         }
         catch (error) {
             toastr.error("Failed to upload image.");

@@ -21,10 +21,12 @@ namespace MyPortfolio.Web.Facades
             _fileSignatures.Add(".jpg", new List<byte[]>() { new byte[] { 0xFF, 0xD8, 0xFF } });
         }
 
-        public async Task<ValidationResult>  ValidateProfilePictureAsync(IFormFile file , ProfilePictureSettings settings)
+        public async Task<(ValidationResult validation, byte[]? imageData, string? imageType)>  ValidateProfilePictureAsync(IFormFile file , ProfilePictureSettings settings)
         {
             bool signatureValid = false;
             var result = new ValidationResult() { Success = true , Messages = new List<string>()};
+            byte[]? imageData = null;
+
             //1.File extension validation
             var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
@@ -32,7 +34,7 @@ namespace MyPortfolio.Web.Facades
             {
                 result.Success = false;
                 result.Messages.Add("Invalid file extension.");
-                return result;
+                return (result,null,null);
             }
 
             //2.File size validation
@@ -40,7 +42,7 @@ namespace MyPortfolio.Web.Facades
             {
                 result.Success = false;
                 result.Messages.Add("File size exceeds the 2MB limit.");
-                return result;
+                return (result, null, null);
             }
 
             using (var memoryStream = new MemoryStream())
@@ -55,6 +57,12 @@ namespace MyPortfolio.Web.Facades
                    memoryStream.Position = 0;
                    var headerBytes = reader.ReadBytes(signatures.Max(s => s.Length));
                    signatureValid = signatures.Any(s => s.SequenceEqual(headerBytes.Take(s.Length)));
+
+                    if (signatureValid)
+                    {
+                        memoryStream.Position = 0;
+                        imageData = reader.ReadBytes((int)file.Length);
+                    }
                 }
             }
 
@@ -63,7 +71,7 @@ namespace MyPortfolio.Web.Facades
                 result.Success = false;
                 result.Messages.Add("Invalid file.");
             }
-            return result;
+            return (result,imageData, fileExtension);
         }
     }
 }
