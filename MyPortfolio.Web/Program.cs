@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using MyPortfolio.Business.Extensions;
 using MyPortfolio.Models.AppModels;
+using MyPortfolio.Web.Facades;
 using Serilog;
 namespace MyPortfolio.Web
 {
