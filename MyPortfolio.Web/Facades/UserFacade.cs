@@ -26,6 +26,7 @@ namespace MyPortfolio.Web.Facades
             bool signatureValid = false;
             var result = new ValidationResult() { Success = true , Messages = new List<string>()};
             byte[]? imageData = null;
+            string imageType = string.Empty;
 
             //1.File extension validation
             var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
@@ -34,6 +35,7 @@ namespace MyPortfolio.Web.Facades
             {
                 result.Success = false;
                 result.Messages.Add("Invalid file extension.");
+                _logger.LogWarning("[ValidateProfilePictureAsync] Validation failed. Unsupported file extension detected. Extension: {Extension}", fileExtension);
                 return (result,null,null);
             }
 
@@ -42,6 +44,9 @@ namespace MyPortfolio.Web.Facades
             {
                 result.Success = false;
                 result.Messages.Add("File size exceeds the 2MB limit.");
+                
+                _logger.LogWarning("[ValidateProfilePictureAsync] Validation failed. File size exceeds configured limit. FileSize: {FileSize} bytes. Limit: {Limit} bytes.", file.Length,settings.SizeInBytes);
+
                 return (result, null, null);
             }
 
@@ -64,14 +69,27 @@ namespace MyPortfolio.Web.Facades
                         imageData = reader.ReadBytes((int)file.Length);
                     }
                 }
+
+                switch (fileExtension)
+                {
+                    case ".png":
+                        imageType = "image/png";
+                        break;
+
+                    case ".jpeg":
+                        imageType = "image/jpeg";
+                        break;
+                }
             }
 
             if (!signatureValid)
             {
                 result.Success = false;
                 result.Messages.Add("Invalid file.");
+                _logger.LogWarning("[ValidateProfilePictureAsync] Validation failed. File signature verification unsuccessful.");
             }
-            return (result,imageData, fileExtension);
+            _logger.LogInformation("[ValidateProfilePictureAsync] Validation completed successfully. ContentType: {ImageType}", imageType);
+            return (result,imageData, imageType);
         }
     }
 }

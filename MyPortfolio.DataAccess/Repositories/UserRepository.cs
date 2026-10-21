@@ -61,5 +61,14 @@ namespace MyPortfolio.DataAccess.Repositories
         {
             return await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<UserProfilePicture> ReadUserImage(Guid imageId, int userId)
+        {
+            UserProfilePicture? picture = null;
+            
+            picture = await _dbContext.Pictures.AsNoTracking().SingleOrDefaultAsync(p => p.UserId == userId && p.PublicImageId ==imageId);
+
+            return picture;
+        }
     }
 }

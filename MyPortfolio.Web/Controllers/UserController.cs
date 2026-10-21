@@ -212,16 +212,19 @@ namespace MyPortfolio.Web.Controllers
                     if (response.IsSucess)
                     {
                         response.Data.imageUrl = Url.Action("GetUserProfilePicture","User", new { imageId = response.Data.ImageId });
+                        _logger.LogInformation("[UploadUserPicture] Profile picture updated successfully. UserId: {UserId}", userInfo.UserId);
                         return Json(response); //returns content with 200 OK status code by default
                     }
                     else
                     {
+                        _logger.LogWarning("[UploadUserPicture] Profile picture update failed. UserId: {UserId}",userInfo.UserId);
                         return StatusCode(500, response);
                     }
                 }
                 else
                 {
                     var response = new AppResponse<List<string>>(result.validation.Success, result.validation.Messages);
+                    _logger.LogWarning("[UploadUserPicture] File validation failed.");
                     return BadRequest(response);
                 }
             }
@@ -231,6 +234,7 @@ namespace MyPortfolio.Web.Controllers
                                 .Select(e => e.ErrorMessage)
                                 .ToList();
                 var response = new AppResponse<List<string>>(false, errors);
+                _logger.LogWarning("[UploadUserPicture] Request validation failed. ModelState is invalid.");
                 return BadRequest(response);
             }
         }
@@ -238,7 +242,31 @@ namespace MyPortfolio.Web.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserProfilePicture(string imageId)
         {
-            return Ok();
+            if (!string.IsNullOrEmpty(imageId) && Guid.TryParse(imageId, out var pictureId))
+            {
+                AppResponse<UserImage> response = null;
+                
+                var user = ReadUserInfoFromAuthCookie();
+                _logger.LogInformation("[GetUserProfilePicture] Image retrieval initiated. UserId: {UserId}, ImageId: {ImageId}", user.UserId,pictureId);
+                response = await _myPortfolioBusiness.GetUserProfilePictureAsync(user.UserId, pictureId);
+ 
+                if (response != null && response.IsSucess)
+                {
+                    _logger.LogInformation("[GetUserProfilePicture] Profile picture retrieved successfully. UserId: {UserId}, ImageId: {ImageId}, ContentType: {ContentType}", user.UserId,pictureId,response.Data.ImageType);
+
+                    return File(response.Data.ImageData, response.Data.ImageType);
+                }
+                else
+                {
+                    _logger.LogWarning("[GetUserProfilePicture] Profile picture not found. UserId: {UserId}, ImageId: {ImageId}", user.UserId,pictureId);
+                    return NotFound();
+                }
+            }
+            else
+            {
+                _logger.LogWarning("[GetUserProfilePicture] Request validation failed. Invalid image identifier supplied. ImageId: {ImageId}", imageId);
+                return BadRequest();
+            }
         }
 
         private async Task CreateAuthCookie(CookieInformation info)
