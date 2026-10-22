@@ -16,5 +16,9 @@ namespace MyPortfolio.Business.Utilities
         public const string ERROR_USER_NOT_FOUND = "User account could not be located.";
         public const string ERROR_PROFILE_PICTURE_SAVE_FAILED = "Failed to commit the profile picture update to the database. Please try again.";
         public const string ERROR_INVALID_IMAGE_PAYLOAD = "The provided image data or format type is missing.";
+        public const string ERROR_PROFILE_PICTURE_INVALID_EXTENSION ="Only PNG and JPEG/JPG image formats are supported.";
+        public const string ERROR_PROFILE_PICTURE_SIZE_EXCEEDED ="Profile picture size must not exceed 2 MB.";
+        public const string ERROR_PROFILE_PICTURE_INVALID_CONTENT ="The uploaded file is not a valid image.";
+        public const string ERROR_PROFILE_PICTURE_NOT_FOUND ="Profile picture could not be located.";
     }
 }
