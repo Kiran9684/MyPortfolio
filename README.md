@@ -143,6 +143,7 @@ flowchart TD
 
     Logic -.-> Models
 ```
+### Request processing
 - [**Request Processing**](docs/request-processing.md): Sequence diagrams illustrating registration, authentication, profile management, and profile-picture workflows.
 
 
