@@ -15,5 +15,7 @@ namespace MyPortfolio.Business
         public Task<BusinessData> UpdateUserProfileAsync(UserProfileViewModel userDetail, string userId);
 
         public Task<AppResponse<ProfilePictureUpdateResponse>> UpdateProfilePictureAsync(UserLoginDetail userDetail, byte[] imageData, string imageType);
+
+        public Task<AppResponse<UserImage>> GetUserProfilePictureAsync(string userId, Guid publicUsrImageId);
     }
 }

@@ -14,6 +14,9 @@ export const Handlers = {
         var url = $(this).data("url"); //this -> button element.
         UserProfilePageHelpers.processUserImage(file, userDetailsForm,url);
 
+    },
+    userImageReadFailure: function (eveObj) {
+        toastr.warning('User image not available');
     }
 }
 
@@ -92,7 +95,7 @@ class UserProfilePageHelpers {
             console.error(error)
         }
         finally {
-            AppUtilities.disableGlobalSpinner();
+            //AppUtilities.disableGlobalSpinner();
         }
     }
 }

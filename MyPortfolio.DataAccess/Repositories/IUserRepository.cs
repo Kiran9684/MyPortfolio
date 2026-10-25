@@ -13,5 +13,6 @@ namespace MyPortfolio.DataAccess.Repositories
         public Task<bool> CreateUserAsync(User newUser);
         public Task UpdateUserLastLoginAsync(User user);
         public Task<int> UpdateUserDetailsAsync(User user);
+        public Task<UserProfilePicture> ReadUserImage(Guid imageId, int userId);
     }
 }

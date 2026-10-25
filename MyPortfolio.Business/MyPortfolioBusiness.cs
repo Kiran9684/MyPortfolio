@@ -211,6 +211,7 @@ namespace MyPortfolio.Business
                         user.ProfilePicture.ImageData = imageData;
                         user.ProfilePicture.ImageType = imageType;
                         user.ProfilePicture.PublicImageId = publicProfilePicId;
+                        _logger.LogInformation("[UpdateProfilePictureAsync] Existing profile picture found. Replacing image content. UserId: {UserId}", user.Id);
                     }
                     else
                     {
@@ -224,6 +225,7 @@ namespace MyPortfolio.Business
                         };
 
                         user.ProfilePicture = profilePic;
+                        _logger.LogInformation("[UpdateProfilePictureAsync] Creating new profile picture record. UserId: {UserId}", user.Id);
                     }
 
                     var updateFlag = await _userRepository.UpdateUserDetailsAsync(user);
@@ -231,10 +233,12 @@ namespace MyPortfolio.Business
                     if (updateFlag > 0)
                     {
                         response.ImageId = publicProfilePicId.ToString();
+                        _logger.LogInformation("[UpdateProfilePictureAsync] Profile picture persisted successfully. UserId: {UserId}. ImageId: {ImageId}", user.Id,publicProfilePicId);
                         return new AppResponse<ProfilePictureUpdateResponse>(true, response);
                     }
                     else
                     {
+                        _logger.LogWarning("[UpdateProfilePictureAsync] Profile picture persistence failed. UserId: {UserId}", user.Id);
                         return new AppResponse<ProfilePictureUpdateResponse>(false, response)
                         {
                             Errors = new List<string> { AppMessage.ERROR_PROFILE_PICTURE_SAVE_FAILED }
@@ -243,6 +247,7 @@ namespace MyPortfolio.Business
                 }
                 else
                 {
+                    _logger.LogWarning("[UpdateProfilePictureAsync] User lookup failed. UserId: {UserId}", userDetail.UserId);
                     return new AppResponse<ProfilePictureUpdateResponse>(false, null)
                     {
                         Errors = new List<string> { AppMessage.ERROR_USER_NOT_FOUND }
@@ -252,11 +257,36 @@ namespace MyPortfolio.Business
             }
             else
             {
+                _logger.LogWarning("[UpdateProfilePictureAsync] Update request rejected. Image payload is invalid.");
                 return new AppResponse<ProfilePictureUpdateResponse>(false, null)
                 {
                     Errors = new List<string> { AppMessage.ERROR_INVALID_IMAGE_PAYLOAD }
                 };
             }
+        }
+
+        public async Task<AppResponse<UserImage>> GetUserProfilePictureAsync(string userId, Guid publicUsrImageId)
+        {
+            UserImage userImage = new UserImage();
+            AppResponse<UserImage> appResponse = null;
+
+            var image = await _userRepository.ReadUserImage(publicUsrImageId, int.Parse(userId));
+
+            if(image != null)
+            {
+                userImage.ImageData = image.ImageData;
+                userImage.ImageType = image.ImageType;
+                appResponse = new AppResponse<UserImage>(true, userImage);
+
+                _logger.LogInformation("[GetUserProfilePictureAsync] Profile picture response created successfully. UserId: {UserId}, ImageId: {ImageId}", userId,publicUsrImageId);
+            }
+            else
+            {
+                appResponse = new AppResponse<UserImage>(false, null);
+                _logger.LogWarning("[GetUserProfilePictureAsync] Profile picture could not be located. UserId: {UserId}, ImageId: {ImageId}", userId,publicUsrImageId);
+            }
+
+            return appResponse;
         }
     }
 }
