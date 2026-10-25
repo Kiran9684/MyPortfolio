@@ -16,7 +16,6 @@ The project is designed around a layered (N-tier) architecture, with separate We
 - [Architecture](#architecture)
 - [Request Processing](#request-processing)
 - [Frontend Architecture](#frontend-architecture)
-- [Profile Picture Workflow](#profile-picture-workflow)
 - [Security and Validation](#security-and-validation)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
